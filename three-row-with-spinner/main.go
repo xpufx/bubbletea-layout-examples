@@ -77,47 +77,51 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m model) View() string {
 
 	/* usually people put all this stuff in functions. Left here for simplicity sake */
-	
-	// note that the horizontal lines are nothing but cleverly placed borders on just top or bottom of all elements
-	// I don't know if there's a way to use a container element and not have to do this for each section
-	topBoxLeft := lipgloss.NewStyle().Width(fixSize(windowWidth, 2)).AlignHorizontal(lipgloss.Left).BorderStyle(lipgloss.NormalBorder()).BorderBottom(true)
-	topBoxRight := lipgloss.NewStyle().Width(windowWidth / 2).AlignHorizontal(lipgloss.Right).BorderStyle(lipgloss.NormalBorder()).BorderBottom(true)
+
+	topBoxLeft := lipgloss.NewStyle().Width(fixSize(windowWidth, 2)).AlignHorizontal(lipgloss.Left)
+	topBoxRight := lipgloss.NewStyle().Width(windowWidth / 2).AlignHorizontal(lipgloss.Right)
 
 	topBoxContent := lipgloss.JoinHorizontal(lipgloss.Left,
 		topBoxLeft.Render("Top Left"),
 		topBoxRight.Render("Top Right"))
 
-	bottomBoxLeft := lipgloss.NewStyle().Width(windowWidth / 3).AlignHorizontal(lipgloss.Left).BorderStyle(lipgloss.NormalBorder()).BorderTop(true)
-	bottomBoxMiddle := lipgloss.NewStyle().Width(windowWidth / 3).AlignHorizontal(lipgloss.Center).BorderStyle(lipgloss.NormalBorder()).BorderTop(true)
-	bottomBoxRight := lipgloss.NewStyle().Width(fixSize(windowWidth, 3)).AlignHorizontal(lipgloss.Right).BorderStyle(lipgloss.NormalBorder()).BorderTop(true)
+	topBoxStyle := lipgloss.NewStyle().BorderStyle(lipgloss.NormalBorder()).BorderBottom(true)
+	topBox := topBoxStyle.Render(topBoxContent)
+
+	bottomBoxLeft := lipgloss.NewStyle().Width(windowWidth / 3).AlignHorizontal(lipgloss.Left)
+	bottomBoxMiddle := lipgloss.NewStyle().Width(windowWidth / 3).AlignHorizontal(lipgloss.Center)
+	bottomBoxRight := lipgloss.NewStyle().Width(fixSize(windowWidth, 3)).AlignHorizontal(lipgloss.Right)
 
 	bottomBoxContent := lipgloss.JoinHorizontal(lipgloss.Bottom,
 		bottomBoxLeft.Render("Bottom Left "),
 		bottomBoxMiddle.Render("Bottom Center"),
 		bottomBoxRight.Render("Bottom Right"))
 
+	// we can reuse and adjust the top box style for the bottom box with Copy().
+	bottomBox := topBoxStyle.Copy().BorderTop(true).BorderBottom(false).Render(bottomBoxContent)
+
 	// this is here because we need the final sizes of the top and bottom bars before we can assign a dynamic size to the middle
-	middleBox := lipgloss.NewStyle().Width(windowWidth).Height(windowHeight - 4)
+	middleBoxStyle := lipgloss.NewStyle().Width(windowWidth).Height(windowHeight - 4)
 	// this 4 above is my top bar height of 2 + bottom bar height of 2 . could be set and queried instead of hardcoded. (I can't because I didn't set them)
 
-	middleBoxContent := ""
+	middleBox := ""
 
 	// this is just some size info to display in the middle box. not important how it's put together.
 	content := fmt.Sprintf("\n\nWindow Height: %d Width: %d", windowHeight, windowWidth)
-	content += fmt.Sprintf("\n\nHeight (middleBox: %d) ", middleBox.GetHeight())
-	content += fmt.Sprintf("\n\nWidth (topBox: %d , middleBox:, %d bottomBox: %d ) ", topBoxLeft.GetWidth(), middleBox.GetWidth(), bottomBoxLeft.GetWidth())
+	content += fmt.Sprintf("\n\nHeight (middleBox: %d) ", middleBoxStyle.GetHeight())
+	content += fmt.Sprintf("\n\nWidth (topBox: %d , middleBox:, %d bottomBox: %d ) ", topBoxLeft.GetWidth(), middleBoxStyle.GetWidth(), bottomBoxLeft.GetWidth())
 
 	// now that top/bottoms sections are ready we can display something
 	if m.busy {
-		middleBoxContent = middleBox.AlignHorizontal(lipgloss.Center).
+		middleBox = middleBoxStyle.AlignHorizontal(lipgloss.Center).
 			AlignVertical(lipgloss.Center).
 			Render(m.spinner.View() + " A lot of important work is being done! " + m.spinner.View())
 	} else {
-		middleBoxContent = middleBox.Width(windowWidth).AlignHorizontal(lipgloss.Center).
+		middleBox = middleBoxStyle.Width(windowWidth).AlignHorizontal(lipgloss.Center).
 			AlignVertical(lipgloss.Center).
 			Render("Resize me to see window/box sizes change while the top and bottom boxes remain static!" + content)
 	}
-	return lipgloss.JoinVertical(lipgloss.Left, topBoxContent, middleBoxContent, bottomBoxContent)
+	return lipgloss.JoinVertical(lipgloss.Left, topBox, middleBox, bottomBox)
 }
 
 // we need this just  so we can return a type tea.Msg from mockSpendTimeMsg()
