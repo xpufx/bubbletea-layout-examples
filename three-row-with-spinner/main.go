@@ -150,9 +150,5 @@ func initialSpinnerModel() spinner.Model {
 // bit to one of the sections so things appear whole
 func fixSize(total int, parts int) int {
 	remainder := total % parts
-	if remainder > 0 {
-		return (total / parts) + remainder
-	} else {
-		return total / parts
-	}
+	return (total / parts) + remainder
 }
