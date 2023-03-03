@@ -3,7 +3,7 @@ A simple layout example with a vertically fixed size top and bottom bar where th
 <!-- blank line -->
 <figure class="video_container">
   <video controls="true" allowfullscreen="true">
-    <source src="three-row-spinner.mp4" type="video/mp4">
+    <source src="./three-row-spinner.mp4" type="video/mp4">
   </video>
 </figure>
 <!-- blank line -->
