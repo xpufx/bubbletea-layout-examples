@@ -76,6 +76,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 // classic Update() function that all bubbletea apps need
 func (m model) View() string {
 
+	/* usually people put all this stuff in functions. Left here for simplicity sake */
+	
 	// note that the horizontal lines are nothing but cleverly placed borders on just top or bottom of all elements
 	// I don't know if there's a way to use a container element and not have to do this for each section
 	topBoxLeft := lipgloss.NewStyle().Width(fixSize(windowWidth, 2)).AlignHorizontal(lipgloss.Left).BorderStyle(lipgloss.NormalBorder()).BorderBottom(true)
