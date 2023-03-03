@@ -73,7 +73,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
-// classic Update() function that all bubbletea apps need
+// classic View() function that all bubbletea apps need
 func (m model) View() string {
 
 	/* usually people put all this stuff in functions. Left here for simplicity sake */
